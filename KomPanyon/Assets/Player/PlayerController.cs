@@ -3,6 +3,7 @@
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float m_JumpForce = 400f;                          // Amount of force added when the player jumps.
+    [SerializeField] private float m_DodgeForce = 700f;                          // Amount of force added when the player dodge.
     [Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;  // How much to smooth out the movement
     [SerializeField] private LayerMask m_WhatIsGround;                          // A mask determining what is ground to the character
     [SerializeField] private Transform m_GroundCheck;                           // A position marking where to check if the player is grounded.
@@ -33,12 +34,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void Move(float move, bool jump)
+    public void Move(float move, bool dodge, bool jump)
     {
-        Vector3 targetVelocity = new Vector2(move * 10f, m_Rigidbody2D.velocity.y);
-        m_Rigidbody2D.velocity = Vector3.SmoothDamp(m_Rigidbody2D.velocity, targetVelocity, ref m_Velocity, m_MovementSmoothing);
+        if (dodge)
+        {
+            m_Rigidbody2D.AddForce(new Vector2(m_DodgeForce * move, 0f));
+        } else {
+            Vector3 targetVelocity = new Vector2(move * 10f, m_Rigidbody2D.velocity.y);
+            m_Rigidbody2D.velocity = Vector3.SmoothDamp(m_Rigidbody2D.velocity, targetVelocity, ref m_Velocity, m_MovementSmoothing);
+        }
 
-        if (targetVelocity.x < 0f)
+        if (m_Rigidbody2D.velocity.x < 0f)
             Flip();
 
         if (m_Grounded && jump)

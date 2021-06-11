@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
 
     float m_HorizontalMovement = 0f;
     bool m_ShouldJump = false;
+    bool m_ShouldDodge = false;
 
     void Update()
     {
@@ -16,11 +17,17 @@ public class PlayerMovement : MonoBehaviour
         {
             m_ShouldJump = true;
         }
+
+        if (Input.GetButtonDown("Dodge"))
+        {
+            m_ShouldDodge = true;
+        }
     }
 
     private void FixedUpdate()
     {
-        m_Controller.Move(m_HorizontalMovement * Time.fixedDeltaTime, m_ShouldJump);
+        m_Controller.Move(m_HorizontalMovement * Time.fixedDeltaTime, m_ShouldDodge, m_ShouldJump);
         m_ShouldJump = false;
+        m_ShouldDodge = false;
     }
 }
