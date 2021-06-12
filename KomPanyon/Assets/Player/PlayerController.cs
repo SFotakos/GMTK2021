@@ -94,4 +94,12 @@ public class PlayerController : MonoBehaviour
             m_CompanionController.ChangeJointState(true);
         }
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Abyss"))
+        {
+            transform.position = Vector2.zero;
+        }
+    }
 }
