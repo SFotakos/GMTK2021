@@ -1178,14 +1178,17 @@ MonoBehaviour:
   m_GroundMask:
     serializedVersion: 2
     m_Bits: 512
-  m_MovementSmoothing: 0
+  m_MovementSmoothing: 0.25
   m_IsJoined: 1
+  m_DisjointDistance: 5
   m_CompanionOffset: {x: 2.5, y: 2.5}
   m_TargetAcquisitionOffset: 0.3
   m_ReturnSpeed: 5
   m_SpriteRenderer: {fileID: 2118244439}
   m_LineRenderer: {fileID: 88987247}
-  inactiveColor: {r: 0.4811321, g: 0.4811321, b: 0.4811321, a: 1}
+  m_InactiveColor: {r: 0.4339623, g: 0.4339623, b: 0.4339623, a: 1}
+  m_JointAttachedColor: {r: 0, g: 0.41335633, b: 0.4433962, a: 1}
+  m_JointDetachingColor: {r: 0.7075472, g: 0, b: 0, a: 0.9019608}
 --- !u!1 &942846808
 GameObject:
   m_ObjectHideFlags: 0
@@ -1955,8 +1958,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_CompanionController: {fileID: 741774249}
-  m_JumpForce: 400
-  m_DodgeForce: 300
+  m_JumpForce: 500
+  m_DodgeForce: 350
   m_MovementSmoothing: 0.03
   m_WhatIsGround:
     serializedVersion: 2

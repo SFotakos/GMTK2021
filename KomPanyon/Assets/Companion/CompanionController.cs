@@ -10,21 +10,59 @@ public class CompanionController : MonoBehaviour
     private Vector3 m_Velocity = Vector3.zero;
 
     public bool m_IsJoined = true;
+    [SerializeField] float m_DisjointDistance = 5f;
     [SerializeField] Vector2 m_CompanionOffset = new Vector2(2.5f, 2.5f);
     [SerializeField] float m_TargetAcquisitionOffset = 0.3f;
     [SerializeField] float m_ReturnSpeed = 5f;
-    
+
     float m_MinPlayerSpeed = 0.05f;
-    float m_ElapsedTime;
+    float m_TimeToMoveElapsed;
     float m_TimeToMove = 0.55f;
+
+    float m_TimeToDisjointElapsed;
+    float m_TimeToDisjoint = 2f;
 
     [SerializeField] private SpriteRenderer m_SpriteRenderer;
     [SerializeField] private LineRenderer m_LineRenderer;
-    [SerializeField] Color inactiveColor;
+    [SerializeField] Color m_InactiveColor;
+
+    [SerializeField] Color m_JointAttachedColor;
+    [SerializeField] Color m_JointDetachingColor;
 
     private void Awake()
     {
         m_Rigidbody2D = GetComponent<Rigidbody2D>();
+    }
+
+    private void Update()
+    {
+        float distance = m_LineRenderer.GetPosition(m_LineRenderer.positionCount-1).magnitude - m_LineRenderer.GetPosition(0).magnitude;
+        if (Mathf.Abs(distance) >= m_DisjointDistance)
+        {
+            if (m_TimeToDisjointElapsed > m_TimeToDisjoint)
+            {
+                ChangeJointState(false);
+                m_TimeToDisjointElapsed = 0;
+            }
+            else
+            {
+                m_TimeToDisjointElapsed += Time.deltaTime;
+            }
+            
+            // If not disjointed show player that the connection is breaking
+            if (m_IsJoined)
+            {
+                m_LineRenderer.startColor = m_JointDetachingColor;
+                m_LineRenderer.endColor = m_JointDetachingColor;
+            }
+        } else
+        {
+            if (m_IsJoined)
+            {
+                m_LineRenderer.startColor = m_JointAttachedColor;
+                m_LineRenderer.endColor = m_JointAttachedColor;
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -45,21 +83,24 @@ public class CompanionController : MonoBehaviour
                 LookTowards(m_Orientation);
                 m_Rigidbody2D.velocity = Vector3.zero;
                 transform.position = Vector2.MoveTowards(transform.position, targetPosition, m_ReturnSpeed * Time.fixedDeltaTime);
-            } else {
+            }
+            else
+            {
                 // If player is moving, follow him after a short delay.
                 if (Mathf.Abs(m_PlayerController.playerRigidbody2D.velocity.x) > m_MinPlayerSpeed)
                 {
-                    if (m_ElapsedTime > m_TimeToMove)
+                    if (m_TimeToMoveElapsed > m_TimeToMove)
                     {
                         LookTowardsPlayer();
-                        Move(m_PlayerController.playerRigidbody2D.velocity.x, m_PlayerController.playerRigidbody2D.velocity.y);
-                        m_ElapsedTime = 0;
+                        Move(m_PlayerController.playerRigidbody2D.velocity.x * 2, m_PlayerController.playerRigidbody2D.velocity.y * 2);
+                        m_TimeToMoveElapsed = 0;
                     }
                     else
                     {
-                        m_ElapsedTime += Time.fixedDeltaTime;
+                        m_TimeToMoveElapsed += Time.fixedDeltaTime;
                     }
-                } else
+                }
+                else
                 {
                     // Flip Towards player
                     LookTowardsPlayer();
@@ -113,9 +154,12 @@ public class CompanionController : MonoBehaviour
         if (state)
         {
             m_SpriteRenderer.color = Color.white;
-        } else
+            m_LineRenderer.startColor = m_JointAttachedColor;
+            m_LineRenderer.endColor = m_JointAttachedColor;
+        }
+        else
         {
-            m_SpriteRenderer.color = inactiveColor;
+            m_SpriteRenderer.color = m_InactiveColor;
             m_LineRenderer.SetPosition(0, Vector3.zero);
             m_LineRenderer.SetPosition(1, Vector3.zero);
         }
