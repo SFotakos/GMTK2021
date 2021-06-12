@@ -3,7 +3,7 @@
 public class PlayerMovement : MonoBehaviour
 {
     public PlayerController m_Controller;
-    public float m_PlayerSpeed = 30f;
+    public float m_PlayerSpeed = 350f;
 
     float m_HorizontalMovement = 0f;
     bool m_ShouldJump = false;
