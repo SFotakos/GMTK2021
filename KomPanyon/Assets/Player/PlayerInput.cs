@@ -13,10 +13,6 @@ public class PlayerInput : MonoBehaviour
     private float m_DodgeElapsedTime;
     [SerializeField] private float m_DodgeCooldown = 0.5f;
 
-    private float m_AttackElapsedTime;
-    [SerializeField] private float m_AttackCooldown = 1f;
-    bool m_ShouldAttack = false;
-
     private void Awake()
     {
         m_Controller.m_GroundedCallback = Landed;
@@ -42,30 +38,10 @@ public class PlayerInput : MonoBehaviour
         {
             m_DodgeElapsedTime += Time.deltaTime;
         }
-
-        if (m_AttackElapsedTime > m_AttackCooldown)
-        {
-            if (Input.GetKeyDown(KeyCode.Mouse0))
-            {
-                m_ShouldAttack = true;
-                m_AttackElapsedTime = 0f;
-            }
-        }
-        else
-        {
-            m_AttackElapsedTime += Time.deltaTime;
-        }
     }
 
     private void FixedUpdate()
     {
-        if (m_ShouldAttack && !animator.GetBool("isJumping") && !animator.GetBool("isDodging"))
-        {
-            m_Controller.Attack();
-            animator.SetBool("isAttacking", true);
-        }
-        m_ShouldAttack = false;
-
         m_Controller.Move(m_HorizontalMovement * Time.fixedDeltaTime, m_ShouldDodge, m_ShouldJump);
         animator.SetFloat("Speed", Mathf.Abs(m_HorizontalMovement));
 
@@ -76,11 +52,10 @@ public class PlayerInput : MonoBehaviour
         {
             m_ShouldDodge = false;
             animator.SetBool("isDodging", true);
-        }
-        
-        
+        }        
     }
 
+    //These should be elsewhere. Oh well.
     private void Landed()
     {
         animator.SetBool("isJumping", false);

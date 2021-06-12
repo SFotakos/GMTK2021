@@ -21,11 +21,6 @@ public class PlayerController : MonoBehaviour
     private float m_GroundedTime = 0.10f;
     public System.Action m_GroundedCallback;
 
-    private void Awake()
-    {
-        playerRigidbody2D = GetComponent<Rigidbody2D>();
-    }
-
     private void FixedUpdate()
     {
         if (m_ElapsedTime > m_GroundedTime)

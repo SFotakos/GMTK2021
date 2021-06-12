@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class CompanionController : MonoBehaviour
 {
@@ -28,6 +30,11 @@ public class CompanionController : MonoBehaviour
 
     [SerializeField] Color m_JointAttachedColor;
     [SerializeField] Color m_JointDetachingColor;
+
+    [SerializeField] int attackDamage = 30;
+    [SerializeField] float attackMaxDuration = 3f;
+    bool m_Attacking = false;
+    Vector3 m_EnemyPosition;
 
     private void Awake()
     {
@@ -73,53 +80,48 @@ public class CompanionController : MonoBehaviour
             m_LineRenderer.SetPosition(0, transform.position);
             m_LineRenderer.SetPosition(1, m_PlayerController.transform.position);
 
-            // Detect target position behind the player
-            int m_Orientation = m_PlayerController.m_FacingRight == true ? -1 : 1;
-            Vector3 targetPosition = new Vector3(m_PlayerController.transform.position.x + companionOffset.x * m_Orientation, m_PlayerController.transform.position.y + companionOffset.y, 0);
+            if (!m_Attacking)
+            {
+                // Detect target position behind the player
+                int m_Orientation = m_PlayerController.m_FacingRight == true ? -1 : 1;
+                Vector3 targetPosition = new Vector3(m_PlayerController.transform.position.x + companionOffset.x * m_Orientation, m_PlayerController.transform.position.y + companionOffset.y, 0);
 
-            if (Vector3.Distance(transform.position, targetPosition) > m_TargetAcquisitionOffset)
-            {
-                // If far from target position, move towards it.
-                LookTowards(m_Orientation);
-                m_Rigidbody2D.velocity = Vector3.zero;
-                transform.position = Vector2.MoveTowards(transform.position, targetPosition, m_ReturnSpeed * Time.fixedDeltaTime);
-            }
-            else
-            {
-                // If player is moving, follow him after a short delay.
-                if (Mathf.Abs(m_PlayerController.playerRigidbody2D.velocity.x) > m_MinPlayerSpeed)
+                if (Vector3.Distance(transform.position, targetPosition) > m_TargetAcquisitionOffset)
                 {
-                    if (m_TimeToMoveElapsed > m_TimeToMove)
-                    {
-                        LookTowardsPlayer();
-                        Move(m_PlayerController.playerRigidbody2D.velocity.x * 2, m_PlayerController.playerRigidbody2D.velocity.y * 2);
-                        m_TimeToMoveElapsed = 0;
-                    }
-                    else
-                    {
-                        m_TimeToMoveElapsed += Time.fixedDeltaTime;
-                    }
+                    // If far from target position, move towards it.
+                    LookTowards(m_Orientation);
+                    m_Rigidbody2D.velocity = Vector3.zero;
+                    transform.position = Vector2.MoveTowards(transform.position, targetPosition, m_ReturnSpeed * Time.fixedDeltaTime);
                 }
                 else
                 {
-                    // Flip Towards player
-                    LookTowardsPlayer();
-
-                    // Sway
-                    //if (m_ElapsedTime > m_TimeToMove)
-                    //{
-                    //    float swayValue = Random.Range(0.3f, 1f);
-                    //    float swayOrientation = Random.Range(-1, 1);
-                    //    float horizontalSway = (transform.position.x + swayValue) * swayOrientation;
-                    //    float verticalSway = (transform.position.y + swayValue) * swayOrientation;
-                    //    Move(horizontalSway * Time.fixedDeltaTime, verticalSway * Time.fixedDeltaTime);
-                    //    m_ElapsedTime = 0;
-                    //}
-                    //else
-                    //{
-                    //    m_ElapsedTime += Time.fixedDeltaTime;
-                    //}
+                    // If player is moving, follow him after a short delay.
+                    if (Mathf.Abs(m_PlayerController.playerRigidbody2D.velocity.x) > m_MinPlayerSpeed)
+                    {
+                        if (m_TimeToMoveElapsed > m_TimeToMove)
+                        {
+                            LookTowardsPlayer();
+                            Move(m_PlayerController.playerRigidbody2D.velocity.x * 2, m_PlayerController.playerRigidbody2D.velocity.y * 2);
+                            m_TimeToMoveElapsed = 0;
+                        }
+                        else
+                        {
+                            m_TimeToMoveElapsed += Time.fixedDeltaTime;
+                        }
+                    }
+                    else
+                    {
+                        // Flip Towards player
+                        LookTowardsPlayer();
+                    }
                 }
+            }
+
+            if (m_Attacking)
+            {
+                //LookTowards(m_Orientation);
+                m_Rigidbody2D.velocity = Vector3.zero;
+                transform.position = Vector2.MoveTowards(transform.position, m_EnemyPosition, m_ReturnSpeed * Time.fixedDeltaTime * 2);
             }
         }
     }
@@ -175,5 +177,32 @@ public class CompanionController : MonoBehaviour
             m_PlayerController.transform.position = Vector2.zero + companionOffset;
             ChangeJointState(true);
         }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Enemy") && m_Attacking)
+        {
+            collision.gameObject.GetComponent<Enemy>().TakeDamage(attackDamage);
+            Debug.Log("We hit " + collision.gameObject.name);
+            m_Attacking = false;
+            m_Rigidbody2D.simulated = false;
+        }
+    }
+
+    public void Attack(GameObject enemy)
+    {
+        m_Attacking = true;
+        m_Rigidbody2D.simulated = true;
+        StartCoroutine(Attacking(attackMaxDuration));
+        m_EnemyPosition = enemy.transform.position;
+        
+    }
+
+    IEnumerator Attacking(float attackDuration)
+    {
+        yield return new WaitForSeconds(attackDuration);
+        m_Attacking = false;
+        m_Rigidbody2D.simulated = false;
     }
 }
