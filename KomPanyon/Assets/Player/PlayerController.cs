@@ -17,6 +17,9 @@ public class PlayerController : MonoBehaviour
     public bool m_FacingRight = true;  // For determining which way the player is currently facing.
     private Vector3 m_Velocity = Vector3.zero;
 
+    private float m_ElapsedTime;
+    private float m_GroundedTime = 0.10f;
+
     private void Awake()
     {
         playerRigidbody2D = GetComponent<Rigidbody2D>();
@@ -24,7 +27,16 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        m_Grounded = false;
+        if (m_ElapsedTime > m_GroundedTime)
+        {
+            m_Grounded = false;
+            m_ElapsedTime = 0;
+        }
+        else
+        {
+            m_ElapsedTime += Time.fixedDeltaTime;
+        }
+        
 
         // The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
         Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_WhatIsGround);
