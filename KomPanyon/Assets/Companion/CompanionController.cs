@@ -2,21 +2,23 @@
 
 public class CompanionController : MonoBehaviour
 {
-
     private Rigidbody2D m_Rigidbody2D;
-    [SerializeField] private Transform m_PlayerTransform;
-    [SerializeField] private Rigidbody2D m_PlayerRigidbody2D;
+    [SerializeField] private PlayerController m_PlayerController;
     [SerializeField] private LayerMask m_PlayerMask;
 
-    public float m_CompanionSpeed = 250f;
     [Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;
     private Vector3 m_Velocity = Vector3.zero;
 
-    bool m_FacingRight = true;
+    private bool m_FacingRight = true;
 
     bool m_IsJoined = true;
     [SerializeField] Vector2 m_CompanionOffset = new Vector2(1.3f, 2.5f);
-    [SerializeField] float m_ReturnSpeed = 3.3f;
+    [SerializeField] float m_TargetAcquisitionOffset = 0.5f;
+    [SerializeField] float m_ReturnSpeed = 5f;
+    
+    float m_MinPlayerSpeed = 0.05f;
+    float m_ElapsedTime;
+    float m_TimeToMove = 0.55f;
 
     private void Awake()
     {
@@ -27,28 +29,62 @@ public class CompanionController : MonoBehaviour
     {
         if (m_IsJoined)
         {
-            if (Mathf.Abs(m_PlayerRigidbody2D.velocity.x) > 0.05f)
+            // Detect target position behind the player
+            int m_Orientation = m_PlayerController.m_FacingRight == true ? -1 : 1;
+            Vector3 targetPosition = new Vector3(m_PlayerController.transform.position.x + m_CompanionOffset.x * m_Orientation, m_PlayerController.transform.position.y + m_CompanionOffset.y, 0);
+
+            if (Vector3.Distance(transform.position, targetPosition) > m_TargetAcquisitionOffset * m_Orientation)
             {
-                Move(m_PlayerRigidbody2D.velocity.x);
-            } else {
+                // If far from target position, move towards it.
                 m_Rigidbody2D.velocity = Vector3.zero;
-                int m_Orientation = m_FacingRight == true ? -1 : 1;
-                Vector3 targetPosition = new Vector3(m_PlayerTransform.position.x + m_CompanionOffset.x * m_Orientation, m_CompanionOffset.y, 0);
                 transform.position = Vector2.MoveTowards(transform.position, targetPosition, m_ReturnSpeed * Time.fixedDeltaTime);
+            } else {
+                // If player is moving, follow him after a short delay.
+                if (Mathf.Abs(m_PlayerController.playerRigidbody2D.velocity.x) > m_MinPlayerSpeed)
+                {
+                    if (m_ElapsedTime > m_TimeToMove)
+                    {
+                        Move(m_PlayerController.playerRigidbody2D.velocity.x, m_PlayerController.playerRigidbody2D.velocity.y);
+                        m_ElapsedTime = 0;
+                    }
+                    else
+                    {
+                        m_ElapsedTime += Time.fixedDeltaTime;
+                    }
+                } else
+                {
+                    // Flip Towards player
+                    transform.localScale = m_PlayerController.transform.localScale;
+
+                    // Sway
+                    //if (m_ElapsedTime > m_TimeToMove)
+                    //{
+                    //    float swayValue = Random.Range(0.3f, 1f);
+                    //    float swayOrientation = Random.Range(-1, 1);
+                    //    float horizontalSway = (transform.position.x + swayValue) * swayOrientation;
+                    //    float verticalSway = (transform.position.y + swayValue) * swayOrientation;
+                    //    Move(horizontalSway * Time.fixedDeltaTime, verticalSway * Time.fixedDeltaTime);
+                    //    m_ElapsedTime = 0;
+                    //}
+                    //else
+                    //{
+                    //    m_ElapsedTime += Time.fixedDeltaTime;
+                    //}
+                }
             }
         }
     }
 
-    public void Move(float move)
+    public void Move(float moveHorizontal, float moveVertical)
     {
-        Vector3 targetVelocity = new Vector2(move, m_Rigidbody2D.velocity.y);
+        Vector3 targetVelocity = new Vector2(moveHorizontal, moveVertical);
         m_Rigidbody2D.velocity = Vector3.SmoothDamp(m_Rigidbody2D.velocity, targetVelocity, ref m_Velocity, m_MovementSmoothing);
 
-        if (move > 0 && !m_FacingRight)
+        if (moveHorizontal > 0 && !m_FacingRight)
         {
             Flip();
         }
-        else if (move < 0 && m_FacingRight)
+        else if (moveHorizontal < 0 && m_FacingRight)
         {
             Flip();
         }
