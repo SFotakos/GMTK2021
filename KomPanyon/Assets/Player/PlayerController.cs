@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour
         {
             m_ElapsedTime += Time.fixedDeltaTime;
         }
-        
+
 
         // The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
         Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_WhatIsGround);
@@ -51,23 +51,20 @@ public class PlayerController : MonoBehaviour
 
     public void Move(float move, bool dodge, bool jump)
     {
-        if (dodge)
+        if (dodge && m_Grounded && move != 0) // If grounded and moving, dodge.
         {
             playerRigidbody2D.AddForce(new Vector2(m_DodgeForce * move, 0f));
             m_CompanionController.ChangeJointState(false);
-        } else {
+        }
+        else
+        {
             Vector3 targetVelocity = new Vector2(move, playerRigidbody2D.velocity.y);
             playerRigidbody2D.velocity = Vector3.SmoothDamp(playerRigidbody2D.velocity, targetVelocity, ref m_Velocity, m_MovementSmoothing);
         }
 
-        if (move > 0 && !m_FacingRight)
-        {
-            Flip();
-        }
-        else if (move < 0 && m_FacingRight)
-        {
-            Flip();
-        }
+        //Flip player
+        if (move > 0 && !m_FacingRight) Flip();
+        else if (move < 0 && m_FacingRight) Flip();
 
         if (m_Grounded && jump)
         {
@@ -99,7 +96,11 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.CompareTag("Abyss"))
         {
+            // Reset game
             transform.position = Vector2.zero;
+            m_CompanionController.ChangeJointState(false);
+            m_CompanionController.transform.position = Vector2.zero + m_CompanionController.companionOffset;
+            m_CompanionController.ChangeJointState(true);
         }
     }
 }

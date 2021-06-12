@@ -11,7 +11,7 @@ public class CompanionController : MonoBehaviour
 
     public bool m_IsJoined = true;
     [SerializeField] float m_DisjointDistance = 5f;
-    [SerializeField] Vector2 m_CompanionOffset = new Vector2(2.5f, 2.5f);
+    public Vector2 companionOffset = new Vector2(2.5f, 2.5f);
     [SerializeField] float m_TargetAcquisitionOffset = 0.3f;
     [SerializeField] float m_ReturnSpeed = 5f;
 
@@ -75,7 +75,7 @@ public class CompanionController : MonoBehaviour
 
             // Detect target position behind the player
             int m_Orientation = m_PlayerController.m_FacingRight == true ? -1 : 1;
-            Vector3 targetPosition = new Vector3(m_PlayerController.transform.position.x + m_CompanionOffset.x * m_Orientation, m_PlayerController.transform.position.y + m_CompanionOffset.y, 0);
+            Vector3 targetPosition = new Vector3(m_PlayerController.transform.position.x + companionOffset.x * m_Orientation, m_PlayerController.transform.position.y + companionOffset.y, 0);
 
             if (Vector3.Distance(transform.position, targetPosition) > m_TargetAcquisitionOffset)
             {
@@ -162,6 +162,18 @@ public class CompanionController : MonoBehaviour
             m_SpriteRenderer.color = m_InactiveColor;
             m_LineRenderer.SetPosition(0, Vector3.zero);
             m_LineRenderer.SetPosition(1, Vector3.zero);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Abyss"))
+        {
+            // Reset game
+            transform.position = Vector2.zero;
+            ChangeJointState(false);
+            m_PlayerController.transform.position = Vector2.zero + companionOffset;
+            ChangeJointState(true);
         }
     }
 }
