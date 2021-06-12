@@ -5,7 +5,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private CompanionController m_CompanionController;
 
     [SerializeField] private float m_JumpForce = 400f;                          // Amount of force added when the player jumps.
-    [SerializeField] private float m_DodgeForce = 300f;                          // Amount of force added when the player dodge.                
     [Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;  // How much to smooth out the movement
     [SerializeField] private LayerMask m_WhatIsGround;                          // A mask determining what is ground to the character
     [SerializeField] private Transform m_GroundCheck;                           // A position marking where to check if the player is grounded.
@@ -35,15 +34,28 @@ public class PlayerController : MonoBehaviour
 
 
         // The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_WhatIsGround);
-        for (int i = 0; i < colliders.Length; i++)
+        Collider2D[] platforms = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_WhatIsGround);
+        for (int i = 0; i < platforms.Length; i++)
         {
-            if (colliders[i].gameObject != gameObject)
+            if (platforms[i].gameObject != gameObject)
             {
                 m_Grounded = true;
                 // This avoid the grounded grace period triggering.
                 if (playerRigidbody2D.velocity.y <= 0f)
                     m_GroundedCallback();
+            }
+        }
+
+        if (!m_CompanionController.isJoined)
+        {
+            Collider2D[] player = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, LayerMask.GetMask("Player"));
+            for (int i = 0; i < player.Length; i++)
+            {
+                if (player[i].gameObject != gameObject)
+                {
+                    m_CompanionController.ChangeJointState(true);
+                    break;
+                }
             }
         }
     }
@@ -72,11 +84,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void Attack()
-    {
-        Debug.Log("Attack");
-    }
-
     private void Flip()
     {
         // Switch the way the player is labelled as facing.
@@ -86,14 +93,6 @@ public class PlayerController : MonoBehaviour
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.collider.CompareTag("Panyon"))
-        {
-            m_CompanionController.ChangeJointState(true);
-        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

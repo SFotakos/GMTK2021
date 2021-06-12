@@ -11,7 +11,7 @@ public class CompanionController : MonoBehaviour
     [Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;
     private Vector3 m_Velocity = Vector3.zero;
 
-    public bool m_IsJoined = true;
+    public bool isJoined = true;
     [SerializeField] float m_DisjointDistance = 5f;
     public Vector2 companionOffset = new Vector2(2.5f, 2.5f);
     [SerializeField] float m_TargetAcquisitionOffset = 0.3f;
@@ -33,6 +33,7 @@ public class CompanionController : MonoBehaviour
 
     [SerializeField] int attackDamage = 30;
     [SerializeField] float attackMaxDuration = 3f;
+    Coroutine m_AttackCoroutine;
     bool m_Attacking = false;
     Vector3 m_EnemyPosition;
 
@@ -57,14 +58,14 @@ public class CompanionController : MonoBehaviour
             }
             
             // If not disjointed show player that the connection is breaking
-            if (m_IsJoined)
+            if (isJoined)
             {
                 m_LineRenderer.startColor = m_JointDetachingColor;
                 m_LineRenderer.endColor = m_JointDetachingColor;
             }
         } else
         {
-            if (m_IsJoined)
+            if (isJoined)
             {
                 m_LineRenderer.startColor = m_JointAttachedColor;
                 m_LineRenderer.endColor = m_JointAttachedColor;
@@ -74,7 +75,7 @@ public class CompanionController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (m_IsJoined)
+        if (isJoined)
         {
             // Direct tether towards player
             m_LineRenderer.SetPosition(0, transform.position);
@@ -120,7 +121,7 @@ public class CompanionController : MonoBehaviour
             if (m_Attacking)
             {
                 //LookTowards(m_Orientation);
-                m_Rigidbody2D.velocity = Vector3.zero;
+                m_Rigidbody2D.velocity = Vector3.one * 0.03f;
                 transform.position = Vector2.MoveTowards(transform.position, m_EnemyPosition, m_ReturnSpeed * Time.fixedDeltaTime * 2);
             }
         }
@@ -151,7 +152,7 @@ public class CompanionController : MonoBehaviour
         m_Rigidbody2D.simulated = !state;
 
         m_LineRenderer.enabled = state;
-        m_IsJoined = state;
+        isJoined = state;
 
         if (state)
         {
@@ -184,25 +185,33 @@ public class CompanionController : MonoBehaviour
         if (collision.collider.CompareTag("Enemy") && m_Attacking)
         {
             collision.gameObject.GetComponent<Enemy>().TakeDamage(attackDamage);
-            Debug.Log("We hit " + collision.gameObject.name);
-            m_Attacking = false;
-            m_Rigidbody2D.simulated = false;
+            Debug.Log("Panyon hit " + collision.gameObject.name);
+            EndAttack();
         }
     }
 
     public void Attack(GameObject enemy)
     {
-        m_Attacking = true;
-        m_Rigidbody2D.simulated = true;
-        StartCoroutine(Attacking(attackMaxDuration));
-        m_EnemyPosition = enemy.transform.position;
+        if (isJoined)
+        {
+            m_Attacking = true;
+            m_Rigidbody2D.simulated = true;
+            m_AttackCoroutine = StartCoroutine(Attacking(attackMaxDuration));
+            m_EnemyPosition = enemy.transform.position;
+        }
         
+    }
+    
+    private void EndAttack()
+    {
+        StopCoroutine(m_AttackCoroutine);
+        m_Attacking = false;
+        m_Rigidbody2D.simulated = false;
     }
 
     IEnumerator Attacking(float attackDuration)
     {
         yield return new WaitForSeconds(attackDuration);
-        m_Attacking = false;
-        m_Rigidbody2D.simulated = false;
+        EndAttack();
     }
 }
