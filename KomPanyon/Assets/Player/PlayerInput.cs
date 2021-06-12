@@ -33,7 +33,7 @@ public class PlayerInput : MonoBehaviour
 
         if (m_DodgeElapsedTime > m_DodgeCooldown)
         {
-            if (Input.GetButtonDown("Dodge"))
+            if (Input.GetKeyDown(KeyCode.Mouse1))
             {
                 m_ShouldDodge = true;
                 m_DodgeElapsedTime = 0f;
