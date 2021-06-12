@@ -5,7 +5,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private CompanionController m_CompanionController;
 
     [SerializeField] private float m_JumpForce = 400f;                          // Amount of force added when the player jumps.
-    [SerializeField] private float m_DodgeForce = 300f;                          // Amount of force added when the player dodge.
+    [SerializeField] private float m_DodgeForce = 300f;                          // Amount of force added when the player dodge.                
     [Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;  // How much to smooth out the movement
     [SerializeField] private LayerMask m_WhatIsGround;                          // A mask determining what is ground to the character
     [SerializeField] private Transform m_GroundCheck;                           // A position marking where to check if the player is grounded.
@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
 
     private float m_ElapsedTime;
     private float m_GroundedTime = 0.10f;
+    public System.Action m_GroundedCallback;
 
     private void Awake()
     {
@@ -45,6 +46,9 @@ public class PlayerController : MonoBehaviour
             if (colliders[i].gameObject != gameObject)
             {
                 m_Grounded = true;
+                // This avoid the grounded grace period triggering.
+                if (playerRigidbody2D.velocity.y <= 0f)
+                    m_GroundedCallback();
             }
         }
     }
@@ -53,7 +57,7 @@ public class PlayerController : MonoBehaviour
     {
         if (dodge && m_Grounded && move != 0) // If grounded and moving, dodge.
         {
-            playerRigidbody2D.AddForce(new Vector2(m_DodgeForce * move, 0f));
+            //Add invulnerability during dodge
             m_CompanionController.ChangeJointState(false);
         }
         else
@@ -71,6 +75,11 @@ public class PlayerController : MonoBehaviour
             m_Grounded = false;
             playerRigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
         }
+    }
+
+    public void Attack()
+    {
+        Debug.Log("Attack");
     }
 
     private void Flip()

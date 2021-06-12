@@ -7,6 +7,7 @@ TagManager:
   - Panyon
   - Kom
   - Abyss
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -18,7 +19,7 @@ TagManager:
   - 
   - Player
   - Platform
-  - 
+  - Enemy
   - 
   - 
   - 
@@ -49,6 +50,9 @@ TagManager:
     locked: 0
   - name: Platforms
     uniqueID: 1990302203
+    locked: 0
+  - name: Enemy
+    uniqueID: 1397879911
     locked: 0
   - name: Player
     uniqueID: 3402884771
