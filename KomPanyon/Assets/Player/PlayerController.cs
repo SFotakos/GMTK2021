@@ -2,8 +2,10 @@
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] private CompanionController m_CompanionController;
+
     [SerializeField] private float m_JumpForce = 400f;                          // Amount of force added when the player jumps.
-    [SerializeField] private float m_DodgeForce = 700f;                          // Amount of force added when the player dodge.
+    [SerializeField] private float m_DodgeForce = 400f;                          // Amount of force added when the player dodge.
     [Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;  // How much to smooth out the movement
     [SerializeField] private LayerMask m_WhatIsGround;                          // A mask determining what is ground to the character
     [SerializeField] private Transform m_GroundCheck;                           // A position marking where to check if the player is grounded.
@@ -40,6 +42,7 @@ public class PlayerController : MonoBehaviour
         if (dodge)
         {
             playerRigidbody2D.AddForce(new Vector2(m_DodgeForce * move, 0f));
+            m_CompanionController.ChangeJointState(false);
         } else {
             Vector3 targetVelocity = new Vector2(move, playerRigidbody2D.velocity.y);
             playerRigidbody2D.velocity = Vector3.SmoothDamp(playerRigidbody2D.velocity, targetVelocity, ref m_Velocity, m_MovementSmoothing);
@@ -70,5 +73,13 @@ public class PlayerController : MonoBehaviour
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Panyon"))
+        {
+            m_CompanionController.ChangeJointState(true);
+        }
     }
 }

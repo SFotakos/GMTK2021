@@ -4,12 +4,12 @@ public class CompanionController : MonoBehaviour
 {
     private Rigidbody2D m_Rigidbody2D;
     [SerializeField] private PlayerController m_PlayerController;
-    [SerializeField] private LayerMask m_PlayerMask;
+    [SerializeField] private LayerMask m_GroundMask;
 
     [Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;
     private Vector3 m_Velocity = Vector3.zero;
 
-    bool m_IsJoined = true;
+    public bool m_IsJoined = true;
     [SerializeField] Vector2 m_CompanionOffset = new Vector2(2.5f, 2.5f);
     [SerializeField] float m_TargetAcquisitionOffset = 0.3f;
     [SerializeField] float m_ReturnSpeed = 5f;
@@ -17,6 +17,9 @@ public class CompanionController : MonoBehaviour
     float m_MinPlayerSpeed = 0.05f;
     float m_ElapsedTime;
     float m_TimeToMove = 0.55f;
+
+    [SerializeField] private SpriteRenderer m_SpriteRenderer;
+    [SerializeField] Color inactiveColor;
 
     private void Awake()
     {
@@ -92,5 +95,18 @@ public class CompanionController : MonoBehaviour
         Vector3 theScale = transform.localScale;
         theScale.x = orientation;
         transform.localScale = theScale;
+    }
+
+    public void ChangeJointState(bool state)
+    {
+        m_Rigidbody2D.simulated = !state;
+        if (state)
+        {
+            m_SpriteRenderer.color = Color.white;
+        } else
+        {
+            m_SpriteRenderer.color = inactiveColor;
+        }
+        m_IsJoined = state;
     }
 }

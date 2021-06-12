@@ -262,7 +262,7 @@ GameObject:
   - component: {fileID: 741774247}
   m_Layer: 0
   m_Name: Panyon
-  m_TagString: Untagged
+  m_TagString: Panyon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -306,14 +306,14 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 741774245}
-  m_BodyType: 1
-  m_Simulated: 1
+  m_BodyType: 0
+  m_Simulated: 0
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 0
+  m_GravityScale: 1
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -332,13 +332,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_PlayerController: {fileID: 1469482154}
-  m_PlayerMask:
+  m_GroundMask:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 512
   m_MovementSmoothing: 0
+  m_IsJoined: 1
   m_CompanionOffset: {x: 2.5, y: 2.5}
   m_TargetAcquisitionOffset: 0.3
   m_ReturnSpeed: 5
+  m_SpriteRenderer: {fileID: 2118244439}
+  inactiveColor: {r: 0.4811321, g: 0.4811321, b: 0.4811321, a: 1}
 --- !u!1 &1367970230
 GameObject:
   m_ObjectHideFlags: 0
@@ -436,7 +439,7 @@ GameObject:
   - component: {fileID: 1469482157}
   m_Layer: 8
   m_Name: Kom
-  m_TagString: Untagged
+  m_TagString: Kom
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -469,8 +472,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ccd0fac68125ea4693938bc8b9c7931, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_CompanionController: {fileID: 741774249}
   m_JumpForce: 400
-  m_DodgeForce: 700
+  m_DodgeForce: 400
   m_MovementSmoothing: 0.03
   m_WhatIsGround:
     serializedVersion: 2
