@@ -19,6 +19,7 @@ public class CompanionController : MonoBehaviour
     float m_TimeToMove = 0.55f;
 
     [SerializeField] private SpriteRenderer m_SpriteRenderer;
+    [SerializeField] private LineRenderer m_LineRenderer;
     [SerializeField] Color inactiveColor;
 
     private void Awake()
@@ -30,6 +31,10 @@ public class CompanionController : MonoBehaviour
     {
         if (m_IsJoined)
         {
+            // Direct tether towards player
+            m_LineRenderer.SetPosition(0, transform.position);
+            m_LineRenderer.SetPosition(1, m_PlayerController.transform.position);
+
             // Detect target position behind the player
             int m_Orientation = m_PlayerController.m_FacingRight == true ? -1 : 1;
             Vector3 targetPosition = new Vector3(m_PlayerController.transform.position.x + m_CompanionOffset.x * m_Orientation, m_PlayerController.transform.position.y + m_CompanionOffset.y, 0);
@@ -87,26 +92,32 @@ public class CompanionController : MonoBehaviour
     private void LookTowardsPlayer()
     {
         Vector3 playerScale = m_PlayerController.transform.localScale;
-        transform.localScale = playerScale;
+        m_SpriteRenderer.transform.localScale = playerScale;
     }
 
     private void LookTowards(int orientation)
     {
-        Vector3 theScale = transform.localScale;
+        Vector3 theScale = m_SpriteRenderer.transform.localScale;
         theScale.x = orientation;
-        transform.localScale = theScale;
+        m_SpriteRenderer.transform.localScale = theScale;
     }
 
     public void ChangeJointState(bool state)
     {
+        // If disjointed enable gravity
         m_Rigidbody2D.simulated = !state;
+
+        m_LineRenderer.enabled = state;
+        m_IsJoined = state;
+
         if (state)
         {
             m_SpriteRenderer.color = Color.white;
         } else
         {
             m_SpriteRenderer.color = inactiveColor;
+            m_LineRenderer.SetPosition(0, Vector3.zero);
+            m_LineRenderer.SetPosition(1, Vector3.zero);
         }
-        m_IsJoined = state;
     }
 }

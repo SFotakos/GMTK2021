@@ -5,7 +5,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private CompanionController m_CompanionController;
 
     [SerializeField] private float m_JumpForce = 400f;                          // Amount of force added when the player jumps.
-    [SerializeField] private float m_DodgeForce = 400f;                          // Amount of force added when the player dodge.
+    [SerializeField] private float m_DodgeForce = 300f;                          // Amount of force added when the player dodge.
     [Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;  // How much to smooth out the movement
     [SerializeField] private LayerMask m_WhatIsGround;                          // A mask determining what is ground to the character
     [SerializeField] private Transform m_GroundCheck;                           // A position marking where to check if the player is grounded.
