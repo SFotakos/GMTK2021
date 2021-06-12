@@ -9,11 +9,9 @@ public class CompanionController : MonoBehaviour
     [Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;
     private Vector3 m_Velocity = Vector3.zero;
 
-    private bool m_FacingRight = true;
-
     bool m_IsJoined = true;
-    [SerializeField] Vector2 m_CompanionOffset = new Vector2(1.3f, 2.5f);
-    [SerializeField] float m_TargetAcquisitionOffset = 0.5f;
+    [SerializeField] Vector2 m_CompanionOffset = new Vector2(2.5f, 2.5f);
+    [SerializeField] float m_TargetAcquisitionOffset = 0.3f;
     [SerializeField] float m_ReturnSpeed = 5f;
     
     float m_MinPlayerSpeed = 0.05f;
@@ -33,9 +31,10 @@ public class CompanionController : MonoBehaviour
             int m_Orientation = m_PlayerController.m_FacingRight == true ? -1 : 1;
             Vector3 targetPosition = new Vector3(m_PlayerController.transform.position.x + m_CompanionOffset.x * m_Orientation, m_PlayerController.transform.position.y + m_CompanionOffset.y, 0);
 
-            if (Vector3.Distance(transform.position, targetPosition) > m_TargetAcquisitionOffset * m_Orientation)
+            if (Vector3.Distance(transform.position, targetPosition) > m_TargetAcquisitionOffset)
             {
                 // If far from target position, move towards it.
+                LookTowards(m_Orientation);
                 m_Rigidbody2D.velocity = Vector3.zero;
                 transform.position = Vector2.MoveTowards(transform.position, targetPosition, m_ReturnSpeed * Time.fixedDeltaTime);
             } else {
@@ -44,6 +43,7 @@ public class CompanionController : MonoBehaviour
                 {
                     if (m_ElapsedTime > m_TimeToMove)
                     {
+                        LookTowardsPlayer();
                         Move(m_PlayerController.playerRigidbody2D.velocity.x, m_PlayerController.playerRigidbody2D.velocity.y);
                         m_ElapsedTime = 0;
                     }
@@ -54,7 +54,7 @@ public class CompanionController : MonoBehaviour
                 } else
                 {
                     // Flip Towards player
-                    transform.localScale = m_PlayerController.transform.localScale;
+                    LookTowardsPlayer();
 
                     // Sway
                     //if (m_ElapsedTime > m_TimeToMove)
@@ -79,22 +79,18 @@ public class CompanionController : MonoBehaviour
     {
         Vector3 targetVelocity = new Vector2(moveHorizontal, moveVertical);
         m_Rigidbody2D.velocity = Vector3.SmoothDamp(m_Rigidbody2D.velocity, targetVelocity, ref m_Velocity, m_MovementSmoothing);
-
-        if (moveHorizontal > 0 && !m_FacingRight)
-        {
-            Flip();
-        }
-        else if (moveHorizontal < 0 && m_FacingRight)
-        {
-            Flip();
-        }
     }
 
-    private void Flip()
+    private void LookTowardsPlayer()
     {
-        m_FacingRight = !m_FacingRight;
+        Vector3 playerScale = m_PlayerController.transform.localScale;
+        transform.localScale = playerScale;
+    }
+
+    private void LookTowards(int orientation)
+    {
         Vector3 theScale = transform.localScale;
-        theScale.x *= -1;
+        theScale.x = orientation;
         transform.localScale = theScale;
     }
 }

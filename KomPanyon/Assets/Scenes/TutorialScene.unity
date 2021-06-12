@@ -331,16 +331,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1553895d0a0a7474393fcccec5605c11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_PlayerController: {fileID: 0}
+  m_PlayerController: {fileID: 1469482154}
   m_PlayerMask:
     serializedVersion: 2
     m_Bits: 256
-  m_CompanionSpeed: 250
   m_MovementSmoothing: 0
-  m_FacingRight: 1
-  m_CompanionOffset: {x: 1.3, y: 2.5}
-  m_TargetAcquisitionOffset: 0.5
-  m_ReturnSpeed: 3.3
+  m_CompanionOffset: {x: 2.5, y: 2.5}
+  m_TargetAcquisitionOffset: 0.3
+  m_ReturnSpeed: 5
 --- !u!1 &1367970230
 GameObject:
   m_ObjectHideFlags: 0
@@ -479,6 +477,7 @@ MonoBehaviour:
     m_Bits: 512
   m_GroundCheck: {fileID: 1644415074}
   playerRigidbody2D: {fileID: 0}
+  m_FacingRight: 1
 --- !u!4 &1469482155
 Transform:
   m_ObjectHideFlags: 0
