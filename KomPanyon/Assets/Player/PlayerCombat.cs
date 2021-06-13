@@ -115,6 +115,7 @@ public class PlayerCombat : MonoBehaviour
     public void Died()
     {
         m_GameController.Died();
+        StartCoroutine(RestartGame());
     }
 
     private void OnDrawGizmosSelected()
@@ -131,5 +132,21 @@ public class PlayerCombat : MonoBehaviour
         {
             TakeDamage();
         }
+    }
+
+    IEnumerator RestartGame()
+    {
+        yield return new WaitForSecondsRealtime(0.5f);
+        m_GameController.Restart();
+        Reset();
+    }
+
+    public void Reset()
+    {
+        currentHealth = maxHealth;
+        m_HurtDelay = .7f;
+        m_HurtTimer = 0f;
+        m_CanBeHurt = true;
+        isDead = false;
     }
 }

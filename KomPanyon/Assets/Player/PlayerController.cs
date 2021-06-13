@@ -104,11 +104,18 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.CompareTag("Abyss"))
         {
-            // Reset game
-            transform.position = Vector2.zero;
-            m_CompanionController.ChangeJointState(false);
-            m_CompanionController.transform.position = Vector2.zero + m_CompanionController.companionOffset;
-            m_CompanionController.ChangeJointState(true);
+            Reset();
         }
+    }
+
+    public void Reset()
+    {
+        // Reset game
+        transform.position = Vector2.zero;
+        m_CompanionController.ChangeJointState(false);
+        m_CompanionController.transform.position = Vector2.zero + m_CompanionController.companionOffset;
+        m_CompanionController.ChangeJointState(true);
+        m_Animator.SetBool("Died", false);
+        m_CompanionController.Reset();
     }
 }

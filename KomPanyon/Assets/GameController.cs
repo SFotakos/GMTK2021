@@ -9,6 +9,13 @@ public class GameController : MonoBehaviour
     private bool _isDead;
     private bool _hasWon;
 
+    [SerializeField] PlayerController playerController;
+
+    private void Awake()
+    {
+        LockCursor();
+    }
+
     private void Update()
     {
         if (!_isDead && Input.GetKeyDown(KeyCode.Escape))
@@ -55,17 +62,20 @@ public class GameController : MonoBehaviour
         //musicAudioSource.Stop();
         //RestartGame();
         ResumeGame();
+        
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
+        playerController.Reset();
     }
 
     private void LockCursor()
     {
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
     }
     private void UnlockCursor()
     {
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
+        //Cursor.visible = true;
+        //Cursor.lockState = CursorLockMode.None;
     }
 
     public void MainMenu()

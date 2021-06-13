@@ -227,4 +227,10 @@ public class CompanionController : MonoBehaviour
         yield return new WaitForSeconds(attackDuration);
         EndAttack();
     }
+
+    public void Reset()
+    {
+        isDead = false;
+        ChangeJointState(true);
+    }
 }
