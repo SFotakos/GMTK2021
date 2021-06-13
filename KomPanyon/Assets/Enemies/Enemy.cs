@@ -7,6 +7,7 @@ public class Enemy : MonoBehaviour
     public int maxHealth = 100;
     int m_CurrentHealth;
     [SerializeField] float m_PlayerSearchRadius = 4f;
+    [SerializeField] bool canFly = false;
 
     // Start is called before the first frame update
     void Awake()
@@ -29,9 +30,12 @@ public class Enemy : MonoBehaviour
                 {
                     if (player[i].CompareTag("Kom"))
                     {
-                        float direction = player[i].transform.position.x - transform.position.x;
-                        direction = Mathf.Abs(direction) < 2f ? direction * 2 : direction;
-                        rb.velocity = new Vector2(direction * 30f * Time.fixedDeltaTime, 0);
+                        Vector3 direction = player[i].transform.position - transform.position;
+                        direction = Mathf.Abs(direction.magnitude) < 2f ? direction * 2 : direction;
+                        LookTowards(direction.x < 0 ? 1 : -1);
+                        rb.velocity = new Vector2(
+                            direction.x * 30f * Time.fixedDeltaTime,
+                            canFly ? direction.y * 30f * Time.fixedDeltaTime : 0f);
                     }
                 }
             }
@@ -70,5 +74,13 @@ public class Enemy : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, m_PlayerSearchRadius);
 
     }
+
+    private void LookTowards(int orientation)
+    {
+        Vector3 theScale = transform.localScale;
+        theScale.x = orientation;
+        transform.localScale = theScale;
+    }
+
 
 }

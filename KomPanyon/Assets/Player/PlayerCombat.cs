@@ -98,11 +98,11 @@ public class PlayerCombat : MonoBehaviour
 
             m_CanBeHurt = false;
             m_HurtTimer = Time.time + m_HurtDelay;
-
-            for (int i = 0; i < damage; i++)
+            int takenDamage = damage > maxHealth ? maxHealth : damage;
+            for (int i = takenDamage; i > 0; i--)
             {
                 currentHealth -= 1;
-                hearts[currentHealth].enabled = false;
+                hearts[i-1].enabled = false;
             }
 
             animator.SetTrigger("Hurt");
