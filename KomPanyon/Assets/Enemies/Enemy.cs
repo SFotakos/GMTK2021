@@ -6,8 +6,10 @@ public class Enemy : MonoBehaviour
     [SerializeField] Rigidbody2D rb;
     public int maxHealth = 100;
     int m_CurrentHealth;
+    [SerializeField] float enemySpeed = 30f;
     [SerializeField] float m_PlayerSearchRadius = 4f;
     [SerializeField] bool canFly = false;
+
 
     // Start is called before the first frame update
     void Awake()
@@ -34,8 +36,8 @@ public class Enemy : MonoBehaviour
                         direction = Mathf.Abs(direction.magnitude) < 2f ? direction * 2 : direction;
                         LookTowards(direction.x < 0 ? 1 : -1);
                         rb.velocity = new Vector2(
-                            direction.x * 30f * Time.fixedDeltaTime,
-                            canFly ? direction.y * 30f * Time.fixedDeltaTime : 0f);
+                            direction.x * enemySpeed * Time.fixedDeltaTime,
+                            canFly ? direction.y * enemySpeed * Time.fixedDeltaTime : 0f);
                     }
                 }
             }

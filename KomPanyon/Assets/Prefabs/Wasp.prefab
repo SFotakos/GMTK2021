@@ -48,8 +48,8 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 3
-  m_Material: {fileID: 0}
+  m_GravityScale: 0
+  m_Material: {fileID: 6200000, guid: f7a0312c1dc4df8408580149c774fc27, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
@@ -80,8 +80,8 @@ PolygonCollider2D:
   m_Points:
     m_Paths:
     - - {x: -0.06776142, y: 0.29212403}
-      - {x: -0.46919686, y: 0.48975113}
-      - {x: -0.47484916, y: 0.0645324}
+      - {x: -0.101151526, y: 0.2750142}
+      - {x: -0.18041271, y: -0.021362424}
       - {x: 0.9567095, y: -0.59816027}
       - {x: 0.98870134, y: -0.2482472}
 --- !u!1 &4956079225078291170
@@ -155,7 +155,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1397879911
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 2683817243547265685, guid: eac592f50e57e5845bb5bd93e9158800,
     type: 3}
@@ -203,7 +203,8 @@ MonoBehaviour:
   m_Animator: {fileID: 4956079225078291198}
   rb: {fileID: 4956079224234090088}
   maxHealth: 100
-  m_PlayerSearchRadius: 4
+  enemySpeed: 60
+  m_PlayerSearchRadius: 8
   canFly: 1
 --- !u!60 &4956079225078291168
 PolygonCollider2D:
@@ -230,10 +231,10 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.31970978, y: 0.47326016}
-      - {x: -0.5531988, y: 0.23908639}
-      - {x: -0.6736641, y: 0.09527993}
-      - {x: 0.2315402, y: -0.3301792}
-      - {x: 0.9627619, y: -0.6012807}
+    - - {x: -0.17249155, y: 0.19103456}
+      - {x: -0.19742203, y: 0.0059435368}
+      - {x: -0.22587585, y: -0.10718632}
+      - {x: 0.25607634, y: -0.29336715}
+      - {x: 0.9504943, y: -0.5767393}
       - {x: 0.97482586, y: -0.2210052}
       - {x: 0.95223904, y: -0.2195549}

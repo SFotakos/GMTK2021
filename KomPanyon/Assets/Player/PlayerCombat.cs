@@ -15,7 +15,8 @@ public class PlayerCombat : MonoBehaviour
 
     [SerializeField] Transform m_AttackPoint;
     [SerializeField] int attackDamage = 5;
-    [SerializeField] float m_AttackRange = 0.5f;
+    [SerializeField] float m_AttackRange = 3f;
+    [SerializeField] float m_AttackRadius = 0.5f;
     [SerializeField] LayerMask m_EnemyLayers;
     [SerializeField] public int maxHealth = 5;
     int currentHealth;
@@ -26,6 +27,11 @@ public class PlayerCombat : MonoBehaviour
     public bool isDead = false;
 
     [SerializeField] public List<Image> hearts;
+    public Transform projectileTransform;
+    public SpriteRenderer projectileRenderer;
+
+    public Vector3 projectileDestination;
+    public Vector3 projectileDirection;
 
     private void Awake()
     {
@@ -38,7 +44,7 @@ public class PlayerCombat : MonoBehaviour
         if (isDead)
             return;
 
-        if (m_AttackElapsedTime > m_AttackCooldown)
+        if (m_AttackElapsedTime > m_AttackCooldown && m_CompanionController.isJoined)
         {
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
@@ -69,21 +75,42 @@ public class PlayerCombat : MonoBehaviour
         {
             Vector3 m_Velocity = Vector3.zero;
             GetComponent<Rigidbody2D>().velocity = Vector3.SmoothDamp(GetComponent<Rigidbody2D>().velocity, Vector3.zero, ref m_Velocity, 0.05f);
+
+            projectileTransform.position = Vector2.MoveTowards(projectileTransform.position, projectileDestination, 16f * Time.fixedDeltaTime);
+        } else
+        {
+            if (projectileRenderer.enabled)
+                projectileRenderer.enabled = false;
         }
 
-        if (m_ShouldAttack && !animator.GetBool("isJumping") && !animator.GetBool("isDodging"))
+        if (m_ShouldAttack && !animator.GetBool("isDodging"))
         {
             animator.SetBool("isAttacking", true);
             Attack();
+
+            projectileTransform.position = m_AttackPoint.position;
+            projectileRenderer.enabled = true;
         }
         m_ShouldAttack = false;
     }
 
     private void Attack()
     {
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(m_AttackPoint.position, m_AttackRange, m_EnemyLayers);
-        foreach (Collider2D enemy in hitEnemies)
+        Vector3 attackDirection = new Vector2(transform.localScale.x, 0);
+
+        Vector3 theScale = projectileTransform.localScale;
+        theScale.x = attackDirection.x;
+        projectileTransform.localScale = theScale;
+
+        RaycastHit2D[] hitEnemies = 
+            Physics2D.CircleCastAll(m_AttackPoint.position, m_AttackRadius, attackDirection, m_AttackRange, m_EnemyLayers);
+
+        projectileDestination = transform.position + new Vector3(1 * attackDirection.x, 0, 0) * m_AttackRange;
+        projectileDirection = attackDirection;
+
+        foreach (RaycastHit2D hit in hitEnemies)
         {
+            Collider2D enemy = hit.collider;
             Debug.Log("Kom hit" + enemy.name);
             enemy.GetComponent<Enemy>().TakeDamage(attackDamage);
             m_CompanionController.Attack(enemy.gameObject);
@@ -98,11 +125,11 @@ public class PlayerCombat : MonoBehaviour
 
             m_CanBeHurt = false;
             m_HurtTimer = Time.time + m_HurtDelay;
-            int takenDamage = damage > maxHealth ? maxHealth : damage;
-            for (int i = takenDamage; i > 0; i--)
+            for (int i = 0; i < damage; i++)
             {
                 currentHealth -= 1;
-                hearts[i-1].enabled = false;
+                if (currentHealth >= 0)
+                    hearts[currentHealth].enabled = false;
             }
 
             animator.SetTrigger("Hurt");
@@ -132,7 +159,8 @@ public class PlayerCombat : MonoBehaviour
     {
         if (m_AttackPoint != null)
         {
-            Gizmos.DrawWireSphere(m_AttackPoint.position, m_AttackRange);
+            Gizmos.DrawWireSphere(m_AttackPoint.position, m_AttackRadius);
+            Gizmos.DrawLine(m_AttackPoint.position, m_AttackPoint.position + new Vector3(1, 0, 0) * m_AttackRange);
         }
     }
 
