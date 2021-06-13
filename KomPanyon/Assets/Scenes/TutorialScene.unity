@@ -354,7 +354,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 116946801}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.32, y: -0.018, z: 0}
+  m_LocalPosition: {x: 0.61, y: -0.018, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1469482155}
@@ -2194,7 +2194,7 @@ MonoBehaviour:
   m_AttackCooldown: 1
   m_AttackPoint: {fileID: 116946802}
   attackDamage: 5
-  m_AttackRange: 0.75
+  m_AttackRange: 0.9
   m_EnemyLayers:
     serializedVersion: 2
     m_Bits: 1024
@@ -2672,7 +2672,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0.02}
   serializedVersion: 2
-  m_Radius: 0.35
+  m_Radius: 0.44
 --- !u!50 &1941961501
 Rigidbody2D:
   serializedVersion: 4
@@ -2708,6 +2708,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Animator: {fileID: 1941961503}
   maxHealth: 100
+  m_PlayerSearchRadius: 3
 --- !u!95 &1941961503
 Animator:
   serializedVersion: 3
