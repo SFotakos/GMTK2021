@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,21 +8,42 @@ public class GameController : MonoBehaviour
     private bool _isDead;
     private bool _hasWon;
 
+    public TextMeshProUGUI levelText;
+
     [SerializeField] PlayerController playerController;
 
     private void Awake()
     {
         LockCursor();
+        string text;
+        int sceneIndex = SceneManager.GetActiveScene().buildIndex;
+
+        if (sceneIndex == 0)
+        {
+            levelText.text = "Tutorial";
+        } else if (sceneIndex == SceneManager.sceneCountInBuildSettings-1)
+        {
+            levelText.text = "Home";
+        } else
+        {
+            levelText.text = "Level: " + sceneIndex;
+        }
+        
     }
 
     private void Update()
     {
-        if (!_isDead && Input.GetKeyDown(KeyCode.Escape))
+        //if (!_isDead && Input.GetKeyDown(KeyCode.Escape))
+        //{
+        //    if (_isPaused)
+        //        ResumeGame();
+        //    else
+        //        PauseGame();
+        //}
+
+        if (!_isDead && Input.GetKeyDown(KeyCode.R))
         {
-            if (_isPaused)
-                ResumeGame();
-            else
-                PauseGame();
+            Restart();
         }
     }
 
@@ -69,8 +89,8 @@ public class GameController : MonoBehaviour
 
     private void LockCursor()
     {
-        //Cursor.visible = false;
-        //Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
     private void UnlockCursor()
     {
