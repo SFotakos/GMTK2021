@@ -4320,6 +4320,12 @@ MonoBehaviour:
     m_Bits: 1024
   maxHealth: 5
   isDead: 0
+  hearts:
+  - {fileID: 512240225}
+  - {fileID: 1785582115}
+  - {fileID: 1631030452}
+  - {fileID: 1751045030}
+  - {fileID: 1286806127}
 --- !u!1 &1508523938
 GameObject:
   m_ObjectHideFlags: 0

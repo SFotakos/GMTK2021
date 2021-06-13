@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerCombat : MonoBehaviour
 {
@@ -16,14 +17,16 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] int attackDamage = 5;
     [SerializeField] float m_AttackRange = 0.5f;
     [SerializeField] LayerMask m_EnemyLayers;
-    [SerializeField] int maxHealth = 5;
+    [SerializeField] public int maxHealth = 5;
     int currentHealth;
 
     float m_HurtDelay = .7f;
     float m_HurtTimer = 0f;
     bool m_CanBeHurt = true;
     public bool isDead = false;
-    
+
+    [SerializeField] public List<Image> hearts;
+
     private void Awake()
     {
         currentHealth = maxHealth;
@@ -88,13 +91,20 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
-    public void TakeDamage()
+    public void TakeDamage(int damage = 1)
     {
         if (m_CanBeHurt && !animator.GetBool("isDodging") && !animator.GetBool("isAttacking"))
         {
+
             m_CanBeHurt = false;
             m_HurtTimer = Time.time + m_HurtDelay;
-            currentHealth -= 1;
+
+            for (int i = 0; i < damage; i++)
+            {
+                currentHealth -= 1;
+                hearts[currentHealth].enabled = false;
+            }
+
             animator.SetTrigger("Hurt");
 
             if (currentHealth <= 0)

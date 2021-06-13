@@ -179,10 +179,7 @@ public class CompanionController : MonoBehaviour
         if (collision.CompareTag("Abyss"))
         {
             // Reset game
-            transform.position = Vector2.zero;
-            ChangeJointState(false);
-            m_PlayerController.transform.position = Vector2.zero + companionOffset;
-            ChangeJointState(true);
+            m_PlayerController.Abyss();
         }
 
         if (collision.CompareTag("Enemy") && m_Attacking)

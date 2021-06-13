@@ -104,8 +104,13 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.CompareTag("Abyss"))
         {
-            Reset();
+            Abyss();
         }
+    }
+
+    public void Abyss()
+    {
+        m_PlayerCombat.TakeDamage(m_PlayerCombat.maxHealth);
     }
 
     public void Reset()
