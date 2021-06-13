@@ -34,7 +34,7 @@ public class CompanionController : MonoBehaviour
     [SerializeField] Color m_JointDetachingColor;
 
     [SerializeField] int attackDamage = 30;
-    [SerializeField] float attackMaxDuration = 3f;
+    [SerializeField] float attackMaxDuration = .5f;
     Coroutine m_AttackCoroutine;
     bool m_Attacking = false;
     Vector3 m_EnemyPosition;
@@ -144,7 +144,7 @@ public class CompanionController : MonoBehaviour
         {
             //LookTowards(m_Orientation);
             m_Rigidbody2D.velocity = Vector3.one * 0.03f;
-            transform.position = Vector2.MoveTowards(transform.position, m_EnemyPosition, m_ReturnSpeed * Time.fixedDeltaTime * 2);
+            transform.position = Vector2.MoveTowards(transform.position, m_EnemyPosition, m_ReturnSpeed * Time.fixedDeltaTime * 4);
         }
     }
 

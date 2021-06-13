@@ -12,11 +12,13 @@ public class FlagController : MonoBehaviour
             int sceneCount = SceneManager.sceneCountInBuildSettings;
             int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
 
-            if (currentSceneIndex < sceneCount)
+            if (currentSceneIndex < sceneCount-1)
             {
+                Debug.Log("Load Next");
                 SceneManager.LoadScene(currentSceneIndex+1, LoadSceneMode.Single);
             } else
             {
+                Debug.Log("Load Ending");
                 SceneManager.LoadScene("Ending Scene", LoadSceneMode.Single);
             }
         }
