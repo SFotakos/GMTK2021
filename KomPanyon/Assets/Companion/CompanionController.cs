@@ -102,9 +102,9 @@ public class CompanionController : MonoBehaviour
         // Direct tether towards player
         m_LineRenderer.SetPosition(0, transform.position);
         m_LineRenderer.SetPosition(1, m_PlayerController.transform.position);
-        LookTowardsPlayer();
         if (!m_Attacking)
         {
+            LookTowardsPlayer();
             // Detect target position behind the player
             int m_Orientation = m_PlayerController.m_FacingRight == true ? -1 : 1;
             Vector3 targetPosition = new Vector3(m_PlayerController.transform.position.x + companionOffset.x * m_Orientation, m_PlayerController.transform.position.y + companionOffset.y, 0);
@@ -131,11 +131,6 @@ public class CompanionController : MonoBehaviour
                     {
                         m_TimeToMoveElapsed += Time.fixedDeltaTime;
                     }
-                }
-                else
-                {
-                    // Flip Towards player
-                    LookTowardsPlayer();
                 }
             }
         }
