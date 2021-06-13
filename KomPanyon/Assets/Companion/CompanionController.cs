@@ -102,7 +102,7 @@ public class CompanionController : MonoBehaviour
         // Direct tether towards player
         m_LineRenderer.SetPosition(0, transform.position);
         m_LineRenderer.SetPosition(1, m_PlayerController.transform.position);
-
+        LookTowardsPlayer();
         if (!m_Attacking)
         {
             // Detect target position behind the player
@@ -112,7 +112,7 @@ public class CompanionController : MonoBehaviour
             if (Vector3.Distance(transform.position, targetPosition) > m_TargetAcquisitionOffset)
             {
                 // If far from target position, move towards it.
-                LookTowards(m_Orientation);
+                
                 m_Rigidbody2D.velocity = Vector3.zero;
                 transform.position = Vector2.MoveTowards(transform.position, targetPosition, m_ReturnSpeed * Time.fixedDeltaTime);
             }
@@ -123,7 +123,7 @@ public class CompanionController : MonoBehaviour
                 {
                     if (m_TimeToMoveElapsed > m_TimeToMove)
                     {
-                        LookTowardsPlayer();
+                        
                         Move(m_PlayerController.playerRigidbody2D.velocity.x * 1.75f, m_PlayerController.playerRigidbody2D.velocity.y * 2);
                         m_TimeToMoveElapsed = 0;
                     }
@@ -156,12 +156,14 @@ public class CompanionController : MonoBehaviour
 
     private void LookTowardsPlayer()
     {
+        //Debug.Log("Look Player");
         Vector3 playerScale = m_PlayerController.transform.localScale;
         m_SpriteRenderer.transform.localScale = playerScale;
     }
 
     private void LookTowards(int orientation)
     {
+        //Debug.Log("Look Towards " + orientation);
         Vector3 theScale = m_SpriteRenderer.transform.localScale;
         theScale.x = orientation;
         m_SpriteRenderer.transform.localScale = theScale;

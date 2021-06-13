@@ -2,7 +2,7 @@
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private CompanionController m_CompanionController;
+    [SerializeField] public CompanionController m_CompanionController;
     [SerializeField] private PlayerCombat m_PlayerCombat;
     [SerializeField] private Animator m_Animator;
 

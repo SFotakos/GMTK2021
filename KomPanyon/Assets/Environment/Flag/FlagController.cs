@@ -8,18 +8,22 @@ public class FlagController : MonoBehaviour
     {
         if (collision.CompareTag("Kom"))
         {
-            Debug.Log("Touched Flag");
-            int sceneCount = SceneManager.sceneCountInBuildSettings;
-            int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+            if (collision.GetComponent<PlayerController>().m_CompanionController.isJoined)
+            {
+                Debug.Log("Touched Flag");
+                int sceneCount = SceneManager.sceneCountInBuildSettings;
+                int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
 
-            if (currentSceneIndex < sceneCount-1)
-            {
-                Debug.Log("Load Next");
-                SceneManager.LoadScene(currentSceneIndex+1, LoadSceneMode.Single);
-            } else
-            {
-                Debug.Log("Load Ending");
-                SceneManager.LoadScene("Ending Scene", LoadSceneMode.Single);
+                if (currentSceneIndex < sceneCount - 1)
+                {
+                    Debug.Log("Load Next");
+                    SceneManager.LoadScene(currentSceneIndex + 1, LoadSceneMode.Single);
+                }
+                else
+                {
+                    Debug.Log("Load Ending");
+                    SceneManager.LoadScene("Ending Scene", LoadSceneMode.Single);
+                }
             }
         }
     }
