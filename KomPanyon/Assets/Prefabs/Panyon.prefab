@@ -145,7 +145,7 @@ MonoBehaviour:
   m_JointAttachedColor: {r: 0, g: 0.41335633, b: 0.4433962, a: 1}
   m_JointDetachingColor: {r: 0.7075472, g: 0, b: 0, a: 0.9019608}
   attackDamage: 30
-  attackMaxDuration: 3
+  attackMaxDuration: 0.4
 --- !u!50 &4262161424486567466
 Rigidbody2D:
   serializedVersion: 4
