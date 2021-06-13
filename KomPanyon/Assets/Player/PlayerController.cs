@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask m_WhatIsGround;                          // A mask determining what is ground to the character
     [SerializeField] private Transform m_GroundCheck;                           // A position marking where to check if the player is grounded.
 
-    const float k_GroundedRadius = .6f; // Radius of the overlap circle to determine if grounded
+    const float k_GroundedRadius = .45f; // Radius of the overlap circle to determine if grounded
     private bool m_Grounded;            // Whether or not the player is grounded.
 
     public Rigidbody2D playerRigidbody2D;
@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 m_Velocity = Vector3.zero;
 
     private float m_ElapsedTime;
-    private float m_GroundedTime = 0.10f;
+    private float m_GroundedTime = 0.08f;
     public System.Action m_GroundedCallback;
 
     private void FixedUpdate()
@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour
             {
                 m_Grounded = true;
                 // This avoid the grounded grace period triggering.
-                //if (playerRigidbody2D.velocity.y <= 0.01f)
+                if (playerRigidbody2D.velocity.y <= 0.01f)
                     m_GroundedCallback();
             }
         }

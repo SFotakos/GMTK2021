@@ -202,7 +202,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Animator: {fileID: 4956079225078291198}
   rb: {fileID: 4956079224234090088}
-  maxHealth: 100
+  maxHealth: 55
   enemySpeed: 60
   m_PlayerSearchRadius: 8
   canFly: 1

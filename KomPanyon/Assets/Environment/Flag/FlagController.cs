@@ -22,7 +22,7 @@ public class FlagController : MonoBehaviour
                 else
                 {
                     Debug.Log("Load Ending");
-                    SceneManager.LoadScene("Ending Scene", LoadSceneMode.Single);
+                    SceneManager.LoadScene("EndingScene", LoadSceneMode.Single);
                 }
             }
         }
