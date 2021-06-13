@@ -3,6 +3,7 @@
 public class PlayerInput : MonoBehaviour
 {
     public PlayerController m_Controller;
+    [SerializeField] private PlayerCombat m_PlayerCombat;
     public Animator animator;
 
     [SerializeField] private float m_PlayerSpeed = 350f;
@@ -20,6 +21,9 @@ public class PlayerInput : MonoBehaviour
 
     void Update()
     {
+        if (m_PlayerCombat.isDead)
+            return;
+
         m_HorizontalMovement = Input.GetAxisRaw("Horizontal") * m_PlayerSpeed;
 
         if (Input.GetButtonDown("Jump"))
@@ -42,6 +46,9 @@ public class PlayerInput : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (m_PlayerCombat.isDead)
+            return;
+
         m_Controller.Move(m_HorizontalMovement * Time.fixedDeltaTime, m_ShouldDodge, m_ShouldJump);
         animator.SetFloat("Speed", Mathf.Abs(m_HorizontalMovement));
 

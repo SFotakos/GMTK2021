@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CompanionController : MonoBehaviour
@@ -37,6 +36,8 @@ public class CompanionController : MonoBehaviour
     bool m_Attacking = false;
     Vector3 m_EnemyPosition;
 
+    bool isDead = false;
+
     private void Awake()
     {
         m_Rigidbody2D = GetComponent<Rigidbody2D>();
@@ -44,7 +45,10 @@ public class CompanionController : MonoBehaviour
 
     private void Update()
     {
-        float distance = m_LineRenderer.GetPosition(m_LineRenderer.positionCount-1).magnitude - m_LineRenderer.GetPosition(0).magnitude;
+        if (isDead)
+            return;
+
+        float distance = m_LineRenderer.GetPosition(m_LineRenderer.positionCount - 1).magnitude - m_LineRenderer.GetPosition(0).magnitude;
         if (Mathf.Abs(distance) >= m_DisjointDistance)
         {
             if (m_TimeToDisjointElapsed > m_TimeToDisjoint)
@@ -56,14 +60,15 @@ public class CompanionController : MonoBehaviour
             {
                 m_TimeToDisjointElapsed += Time.deltaTime;
             }
-            
+
             // If not disjointed show player that the connection is breaking
             if (isJoined)
             {
                 m_LineRenderer.startColor = m_JointDetachingColor;
                 m_LineRenderer.endColor = m_JointDetachingColor;
             }
-        } else
+        }
+        else
         {
             if (isJoined)
             {
@@ -75,55 +80,56 @@ public class CompanionController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (isJoined)
+        if (isDead || !isJoined)
+            return;
+
+
+        // Direct tether towards player
+        m_LineRenderer.SetPosition(0, transform.position);
+        m_LineRenderer.SetPosition(1, m_PlayerController.transform.position);
+
+        if (!m_Attacking)
         {
-            // Direct tether towards player
-            m_LineRenderer.SetPosition(0, transform.position);
-            m_LineRenderer.SetPosition(1, m_PlayerController.transform.position);
+            // Detect target position behind the player
+            int m_Orientation = m_PlayerController.m_FacingRight == true ? -1 : 1;
+            Vector3 targetPosition = new Vector3(m_PlayerController.transform.position.x + companionOffset.x * m_Orientation, m_PlayerController.transform.position.y + companionOffset.y, 0);
 
-            if (!m_Attacking)
+            if (Vector3.Distance(transform.position, targetPosition) > m_TargetAcquisitionOffset)
             {
-                // Detect target position behind the player
-                int m_Orientation = m_PlayerController.m_FacingRight == true ? -1 : 1;
-                Vector3 targetPosition = new Vector3(m_PlayerController.transform.position.x + companionOffset.x * m_Orientation, m_PlayerController.transform.position.y + companionOffset.y, 0);
-
-                if (Vector3.Distance(transform.position, targetPosition) > m_TargetAcquisitionOffset)
+                // If far from target position, move towards it.
+                LookTowards(m_Orientation);
+                m_Rigidbody2D.velocity = Vector3.zero;
+                transform.position = Vector2.MoveTowards(transform.position, targetPosition, m_ReturnSpeed * Time.fixedDeltaTime);
+            }
+            else
+            {
+                // If player is moving, follow him after a short delay.
+                if (Mathf.Abs(m_PlayerController.playerRigidbody2D.velocity.x) > m_MinPlayerSpeed)
                 {
-                    // If far from target position, move towards it.
-                    LookTowards(m_Orientation);
-                    m_Rigidbody2D.velocity = Vector3.zero;
-                    transform.position = Vector2.MoveTowards(transform.position, targetPosition, m_ReturnSpeed * Time.fixedDeltaTime);
-                }
-                else
-                {
-                    // If player is moving, follow him after a short delay.
-                    if (Mathf.Abs(m_PlayerController.playerRigidbody2D.velocity.x) > m_MinPlayerSpeed)
+                    if (m_TimeToMoveElapsed > m_TimeToMove)
                     {
-                        if (m_TimeToMoveElapsed > m_TimeToMove)
-                        {
-                            LookTowardsPlayer();
-                            Move(m_PlayerController.playerRigidbody2D.velocity.x * 2, m_PlayerController.playerRigidbody2D.velocity.y * 2);
-                            m_TimeToMoveElapsed = 0;
-                        }
-                        else
-                        {
-                            m_TimeToMoveElapsed += Time.fixedDeltaTime;
-                        }
+                        LookTowardsPlayer();
+                        Move(m_PlayerController.playerRigidbody2D.velocity.x * 2, m_PlayerController.playerRigidbody2D.velocity.y * 2);
+                        m_TimeToMoveElapsed = 0;
                     }
                     else
                     {
-                        // Flip Towards player
-                        LookTowardsPlayer();
+                        m_TimeToMoveElapsed += Time.fixedDeltaTime;
                     }
                 }
+                else
+                {
+                    // Flip Towards player
+                    LookTowardsPlayer();
+                }
             }
+        }
 
-            if (m_Attacking)
-            {
-                //LookTowards(m_Orientation);
-                m_Rigidbody2D.velocity = Vector3.one * 0.03f;
-                transform.position = Vector2.MoveTowards(transform.position, m_EnemyPosition, m_ReturnSpeed * Time.fixedDeltaTime * 2);
-            }
+        if (m_Attacking)
+        {
+            //LookTowards(m_Orientation);
+            m_Rigidbody2D.velocity = Vector3.one * 0.03f;
+            transform.position = Vector2.MoveTowards(transform.position, m_EnemyPosition, m_ReturnSpeed * Time.fixedDeltaTime * 2);
         }
     }
 
@@ -199,12 +205,22 @@ public class CompanionController : MonoBehaviour
             m_AttackCoroutine = StartCoroutine(Attacking(attackMaxDuration));
             m_EnemyPosition = enemy.transform.position;
         }
-        
+
     }
-    
+
+    public void Died()
+    {
+        isDead = true;
+        ChangeJointState(false);
+        if (m_AttackCoroutine != null)
+            StopCoroutine(m_AttackCoroutine);
+        m_Attacking = false;
+    }
+
     private void EndAttack()
     {
-        StopCoroutine(m_AttackCoroutine);
+        if (m_AttackCoroutine != null)
+            StopCoroutine(m_AttackCoroutine);
         m_Attacking = false;
         m_Rigidbody2D.simulated = false;
     }
