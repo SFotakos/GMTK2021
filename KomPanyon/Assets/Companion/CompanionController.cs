@@ -14,7 +14,7 @@ public class CompanionController : MonoBehaviour
     [SerializeField] float m_DisjointDistance = 5f;
     public Vector2 companionOffset = new Vector2(2.5f, 2.5f);
     [SerializeField] float m_TargetAcquisitionOffset = 0.3f;
-    [SerializeField] float m_ReturnSpeed = 5f;
+    [SerializeField] float m_ReturnSpeed = 6f;
 
     float m_MinPlayerSpeed = 0.05f;
     float m_TimeToMoveElapsed;
@@ -109,7 +109,7 @@ public class CompanionController : MonoBehaviour
                     if (m_TimeToMoveElapsed > m_TimeToMove)
                     {
                         LookTowardsPlayer();
-                        Move(m_PlayerController.playerRigidbody2D.velocity.x * 2, m_PlayerController.playerRigidbody2D.velocity.y * 2);
+                        Move(m_PlayerController.playerRigidbody2D.velocity.x * 1.75f, m_PlayerController.playerRigidbody2D.velocity.y * 2);
                         m_TimeToMoveElapsed = 0;
                     }
                     else

@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour
             {
                 m_Grounded = true;
                 // This avoid the grounded grace period triggering.
-                if (playerRigidbody2D.velocity.y <= 0f)
+                if (playerRigidbody2D.velocity.y <= 0.5f)
                     m_GroundedCallback();
             }
         }
