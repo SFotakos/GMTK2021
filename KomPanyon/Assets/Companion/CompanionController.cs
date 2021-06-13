@@ -23,6 +23,9 @@ public class CompanionController : MonoBehaviour
     float m_TimeToDisjointElapsed;
     float m_TimeToDisjoint = 2f;
 
+    float m_DisjointTimeElapsed;
+    float m_DisjointTimeToKill = 6f;
+
     [SerializeField] private SpriteRenderer m_SpriteRenderer;
     [SerializeField] private LineRenderer m_LineRenderer;
     [SerializeField] Color m_InactiveColor;
@@ -80,9 +83,21 @@ public class CompanionController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (isDead || !isJoined)
+        if (isDead)
             return;
 
+        if (!isJoined)
+        {
+            if (m_DisjointTimeElapsed > m_DisjointTimeToKill)
+            {
+                m_PlayerController.InstantKill();
+            }
+            else
+            {
+                m_DisjointTimeElapsed += Time.fixedDeltaTime;
+            }
+            return;
+        }
 
         // Direct tether towards player
         m_LineRenderer.SetPosition(0, transform.position);
@@ -154,6 +169,8 @@ public class CompanionController : MonoBehaviour
 
     public void ChangeJointState(bool state)
     {
+        if (state) m_DisjointTimeElapsed = 0f;
+
         // If disjointed enable gravity
         m_Rigidbody2D.simulated = !state;
 
@@ -179,7 +196,7 @@ public class CompanionController : MonoBehaviour
         if (collision.CompareTag("Abyss"))
         {
             // Reset game
-            m_PlayerController.Abyss();
+            m_PlayerController.InstantKill();
         }
 
         if (collision.CompareTag("Enemy") && m_Attacking)

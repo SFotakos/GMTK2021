@@ -104,11 +104,11 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.CompareTag("Abyss"))
         {
-            Abyss();
+            InstantKill();
         }
     }
 
-    public void Abyss()
+    public void InstantKill()
     {
         m_PlayerCombat.TakeDamage(m_PlayerCombat.maxHealth);
     }
