@@ -9,7 +9,7 @@ public class PlayerCombat : MonoBehaviour
     private GameController m_GameController;
 
     private float m_AttackElapsedTime = 1f;
-    [SerializeField] private float m_AttackCooldown = 1f;
+    [SerializeField] private float m_AttackCooldown = .7f;
     bool m_ShouldAttack = false;
 
     [SerializeField] Transform m_AttackPoint;
@@ -19,7 +19,7 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] int maxHealth = 5;
     int currentHealth;
 
-    float m_HurtDelay = .4f;
+    float m_HurtDelay = .7f;
     float m_HurtTimer = 0f;
     bool m_CanBeHurt = true;
     public bool isDead = false;
