@@ -52,7 +52,11 @@ public class PlayerInput : MonoBehaviour
         {
             m_ShouldDodge = false;
             animator.SetBool("isDodging", true);
-        }        
+        } else if (Mathf.Abs(m_HorizontalMovement) < 0.05f)
+        {
+            m_ShouldDodge = false;
+            animator.SetBool("isDodging", false);
+        }    
     }
 
     //These should be elsewhere. Oh well.
