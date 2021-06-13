@@ -12,7 +12,7 @@ public class PlayerInput : MonoBehaviour
     bool m_ShouldDodge = false;
 
     private float m_DodgeElapsedTime;
-    [SerializeField] private float m_DodgeCooldown = 0.5f;
+    [SerializeField] private float m_DodgeCooldown = 0.8f;
 
     private void Awake()
     {
@@ -21,7 +21,7 @@ public class PlayerInput : MonoBehaviour
 
     void Update()
     {
-        if (m_PlayerCombat.isDead)
+        if (m_PlayerCombat.isDead || animator.GetBool("isAttacking"))
             return;
 
         m_HorizontalMovement = Input.GetAxisRaw("Horizontal") * m_PlayerSpeed;
@@ -46,7 +46,7 @@ public class PlayerInput : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (m_PlayerCombat.isDead)
+        if (m_PlayerCombat.isDead || animator.GetBool("isAttacking"))
             return;
 
         m_Controller.Move(m_HorizontalMovement * Time.fixedDeltaTime, m_ShouldDodge, m_ShouldJump);

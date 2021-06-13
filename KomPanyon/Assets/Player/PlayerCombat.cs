@@ -23,7 +23,7 @@ public class PlayerCombat : MonoBehaviour
     float m_HurtTimer = 0f;
     bool m_CanBeHurt = true;
     public bool isDead = false;
-
+    
     private void Awake()
     {
         currentHealth = maxHealth;
@@ -62,6 +62,12 @@ public class PlayerCombat : MonoBehaviour
         if (isDead)
             return;
 
+        if (animator.GetBool("isAttacking"))
+        {
+            Vector3 m_Velocity = Vector3.zero;
+            GetComponent<Rigidbody2D>().velocity = Vector3.SmoothDamp(GetComponent<Rigidbody2D>().velocity, Vector3.zero, ref m_Velocity, 0.05f);
+        }
+
         if (m_ShouldAttack && !animator.GetBool("isJumping") && !animator.GetBool("isDodging"))
         {
             animator.SetBool("isAttacking", true);
@@ -84,7 +90,7 @@ public class PlayerCombat : MonoBehaviour
 
     public void TakeDamage()
     {
-        if (m_CanBeHurt)
+        if (m_CanBeHurt && !animator.GetBool("isDodging") && !animator.GetBool("isAttacking"))
         {
             m_CanBeHurt = false;
             m_HurtTimer = Time.time + m_HurtDelay;
@@ -119,9 +125,9 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.collider.CompareTag("Enemy"))
+        if (collision.CompareTag("Enemy"))
         {
             TakeDamage();
         }

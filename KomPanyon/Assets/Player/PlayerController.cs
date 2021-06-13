@@ -4,6 +4,7 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private CompanionController m_CompanionController;
     [SerializeField] private PlayerCombat m_PlayerCombat;
+    [SerializeField] private Animator m_Animator;
 
     [SerializeField] private float m_JumpForce = 400f;                          // Amount of force added when the player jumps.
     [Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;  // How much to smooth out the movement
@@ -23,7 +24,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (m_PlayerCombat.isDead)
+        if (m_PlayerCombat.isDead || m_Animator.GetBool("isAttacking"))
             return;
 
         if (m_ElapsedTime > m_GroundedTime)

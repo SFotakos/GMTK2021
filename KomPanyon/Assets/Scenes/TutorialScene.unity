@@ -354,7 +354,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 116946801}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.741, y: -0.018, z: 0}
+  m_LocalPosition: {x: 0.8, y: -0.018, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1469482155}
@@ -2094,6 +2094,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CompanionController: {fileID: 741774249}
   m_PlayerCombat: {fileID: 1469482159}
+  m_Animator: {fileID: 1469482158}
   m_JumpForce: 500
   m_MovementSmoothing: 0.03
   m_WhatIsGround:
@@ -2156,7 +2157,7 @@ MonoBehaviour:
   m_PlayerCombat: {fileID: 1469482159}
   animator: {fileID: 1469482158}
   m_PlayerSpeed: 350
-  m_DodgeCooldown: 0.5
+  m_DodgeCooldown: 0.8
 --- !u!95 &1469482158
 Animator:
   serializedVersion: 3
@@ -2666,7 +2667,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0.02}

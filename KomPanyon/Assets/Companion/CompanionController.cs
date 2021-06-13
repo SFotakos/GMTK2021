@@ -184,11 +184,8 @@ public class CompanionController : MonoBehaviour
             m_PlayerController.transform.position = Vector2.zero + companionOffset;
             ChangeJointState(true);
         }
-    }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.collider.CompareTag("Enemy") && m_Attacking)
+        if (collision.CompareTag("Enemy") && m_Attacking)
         {
             collision.gameObject.GetComponent<Enemy>().TakeDamage(attackDamage);
             Debug.Log("Panyon hit " + collision.gameObject.name);
