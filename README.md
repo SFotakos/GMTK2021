@@ -1,5 +1,5 @@
 # GMTK2021
-Repo for the GMTK2021 game jam and it's theme was _*Joined Together*_
+Repo for the [GMTK2021](https://itch.io/jam/gmtk-2021) game jam and it's theme was _*Joined Together*_
 
 It's a 2d platformer featuring Kom and Panyon on their way home, fighting random monsters that attack them.
  
